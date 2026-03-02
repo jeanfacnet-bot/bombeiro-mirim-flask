@@ -1,0 +1,11 @@
+<div class="mb-3">
+    <label class="form-label">Local (OBM)</label>
+    <select name="localpbm" class="form-control" required>
+        <option value="">Selecione a OBM</option>
+        {% for obm in obms %}
+            <option value="{{ obm }}">{{ obm }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<input type="text" value="RESERVA" class="form-control" readonly>

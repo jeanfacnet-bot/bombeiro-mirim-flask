@@ -1,0 +1,48 @@
+<table class="table table-bordered">
+<thead class="table-primary">
+<tr>
+    <th>Nome</th>
+    <th>Presença</th>
+</tr>
+</thead>
+<tbody>
+{% for aluno in alunos %}
+<tr>
+    <td>{{ aluno.nome }}</td>
+    <td>
+
+        <input type="hidden"
+               name="status_{{ aluno.id }}"
+               value="1"
+               id="status_{{ aluno.id }}">
+
+        <button type="button"
+                class="btn btn-success btn-sm"
+                onclick="alterarStatus({{ aluno.id }}, this)">
+            Presente
+        </button>
+
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+<script>
+function alterarStatus(id, button){
+
+    const input = document.getElementById("status_" + id);
+
+    if(input.value === "1"){
+        input.value = "0";
+        button.classList.remove("btn-success");
+        button.classList.add("btn-danger");
+        button.textContent = "Falta";
+    }else{
+        input.value = "1";
+        button.classList.remove("btn-danger");
+        button.classList.add("btn-success");
+        button.textContent = "Presente";
+    }
+}
+</script>

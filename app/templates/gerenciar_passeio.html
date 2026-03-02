@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gerenciar Passeio</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<style>
+.nome-suspenso {
+    background-color: #ff4d4d;
+    color: white !important;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    font-weight: bold;
+}
+
+@media print {
+    body * { visibility: hidden; }
+    #areaImpressao, #areaImpressao * { visibility: visible; }
+    #areaImpressao {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+    .nao-imprimir { display: none !important; }
+}
+</style>
+</head>
+
+<body class="p-4">
+
+<div class="d-flex gap-2 mb-3 nao-imprimir">
+
+    <button type="button" onclick="window.print()" class="btn btn-primary">
+        🖨 Imprimir Lista
+    </button>
+
+    <a href="{{ url_for('main.autorizacao_passeio', idpasseio=passeio.id) }}"
+	   target="_blank"
+	   class="btn btn-success">
+	   🖨 Imprimir Autorizações
+	</a>
+
+</div>
+
+<hr>
+
+<div id="areaImpressao">
+
+<h5>Alunos no Passeio ou Evento</h5>
+
+<form method="POST">
+<input type="hidden" name="acao" value="remover_varios">
+
+<table class="table table-striped">
+<tr>
+    <th style="width:40px;">
+        <input type="checkbox" onclick="toggleTodosPasseio(this)">
+    </th>
+    <th>Nome</th>
+    <th>Turno</th>
+    <th>Rota</th>
+    <th>Telefone Resp.</th>
+    <th style="width:120px;">Presença</th>
+</tr>
+
+{% for aluno in alunos_passeio %}
+<tr>
+    <td>
+        <input type="checkbox" name="remover_ids[]" value="{{ aluno.idmatricula }}">
+    </td>
+
+    <td>
+        <a href="{{ url_for('main.editar', id=aluno.idmatricula) }}"
+           target="_blank"
+           class="text-dark text-decoration-none">
+           {{ aluno.nome }}
+        </a>
+    </td>
+
+    <td>{{ aluno.turnopbm }}</td>
+    <td>{{ aluno.rotaonibus if aluno.rotaonibus else '-' }}</td>
+    <td>{{ aluno.telresp if aluno.telresp else '-' }}</td>
+
+    <td>
+        <div style="border:1px solid #000; height:25px;"></div>
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+<div class="mb-3 nao-imprimir">
+    <button type="submit" class="btn btn-danger btn-sm">
+        Remover Selecionados
+    </button>
+</div>
+</form>
+
+<h5 class="mt-4">Adicionar Alunos</h5>
+
+<form method="POST">
+
+{% for turno, pelotoes in estrutura.items() %}
+
+<div class="mt-4">
+<h4 class="bg-primary text-white p-2 rounded">{{ turno }}</h4>
+
+{% for numero, alunos in pelotoes.items() %}
+
+<div class="mt-3">
+<div class="bg-danger text-white p-2 rounded d-flex justify-content-between align-items-center">
+    <strong>{{ numero }}º PELOTÃO - Total: {{ alunos|length }}</strong>
+
+    <div>
+        <input type="checkbox"
+               class="form-check-input me-1"
+               onclick="togglePelotao('{{ turno }}_{{ numero }}', this)">
+        <small>Marcar todos</small>
+    </div>
+</div>
+
+{% if alunos %}
+
+<table class="table table-bordered table-sm">
+<tr>
+<th></th>
+<th>Nome</th>
+<th>Turno</th>
+<th>Rota</th>
+<th>Telefone</th>
+<th>Idade</th>
+</tr>
+
+{% for item in alunos %}
+<tr>
+<td>
+<input type="checkbox"
+       class="check-{{ turno }}_{{ numero }}"
+       name="alunos[]"
+       value="{{ item.aluno.id }}">
+</td>
+
+<td>
+<a href="{{ url_for('main.editar', id=item.aluno.id) }}"
+   target="_blank"
+   class="text-decoration-none text-dark">
+   {{ item.aluno.nome }}
+</a>
+</td>
+
+<td>{{ item.aluno.turnopbm }}</td>
+<td>{{ item.aluno.rotaonibus if item.aluno.rotaonibus else '-' }}</td>
+<td>{{ item.aluno.telresp if item.aluno.telresp else '-' }}</td>
+<td>{{ item.idade }} anos</td>
+</tr>
+{% endfor %}
+
+</table>
+
+<div class="text-center mb-3">
+<button type="submit" name="adicionar" class="btn btn-success btn-sm">
+Adicionar Selecionados
+</button>
+</div>
+
+{% else %}
+<p class="text-muted">Nenhum aluno neste pelotão.</p>
+{% endif %}
+
+</div>
+
+{% endfor %}
+</div>
+
+{% endfor %}
+
+</form>
+
+<hr>
+
+<a href="{{ url_for('main.passeios') }}" class="btn btn-secondary mt-3">
+Voltar
+</a>
+
+</div>
+
+<script>
+function togglePelotao(grupo, master) {
+    const checkboxes = document.querySelectorAll(".check-" + grupo);
+    checkboxes.forEach(cb => cb.checked = master.checked);
+}
+
+function toggleTodosPasseio(master) {
+    const checkboxes = document.querySelectorAll("input[name='remover_ids[]']");
+    checkboxes.forEach(cb => cb.checked = master.checked);
+}
+</script>
+
+</body>
+</html>

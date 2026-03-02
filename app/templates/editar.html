@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alterar Cadastro - Bombeiro Mirim</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+
+/* ===== BOTÕES TURNO ESTILO ANTIGO ===== */
+
+.turno-buttons {
+    display:flex;
+    gap:10px;
+}
+
+.turno-btn {
+    border-radius:15px;
+    padding:6px 14px;
+    font-weight:600;
+    transition:all 0.25s ease;
+    opacity:0.35;                 /* BEM APAGADO */
+    filter:saturate(60%);
+    border:1px solid transparent;
+}
+
+/* ===== ESTADO NÃO CLICADO ===== */
+
+/* MATUTINO apagado azul médio */
+.turno-btn[data-turno="MATUTINO"] {
+    background:#bbdefb;     /* azul mais forte */
+    border-color:#90caf9;
+    color:#0d47a1;
+}
+
+/* VESPERTINO apagado laranja médio */
+.turno-btn[data-turno="VESPERTINO"] {
+    background:#ffcc80;     /* laranja mais forte */
+    border-color:#ffb74d;
+    color:#e65100;
+}
+
+/* ===== QUANDO CLICADO (AMBOS FICAM VERDES) ===== */
+
+.turno-btn.selected {
+    opacity:1;
+    filter:saturate(130%);
+    background:#1565c0 !important;      /* AZUL FORTE */
+    border-color:#0d47a1 !important;
+    color:white !important;
+    transform:scale(1.08);
+    box-shadow:
+        0 0 12px rgba(0,0,0,0.4),
+        0 0 18px rgba(0,0,0,0.2);
+}
+
+.turno-btn[data-turno="MATUTINO"].selected {
+    background:#2e7d32;
+    border-color:#1b5e20;
+}
+
+.turno-btn[data-turno="VESPERTINO"].selected {
+    background:#ef6c00;
+    border-color:#e65100;
+}
+
+.turno-btn[data-turno="RESERVA"].selected {
+    background:#616161;
+    border-color:#424242;
+}
+
+/* ===== BOTÕES STATUS ESTILO SISTEMA ANTIGO ===== */
+
+.status-btn {
+    border-radius:15px;
+    padding:6px 12px;
+    font-weight:600;
+    transition:all 0.25s ease;
+    opacity:0.25;              /* MAIS APAGADO */
+    filter:saturate(60%);
+}
+
+/* CORES BASE */
+.status-btn[data-status="1"] {
+    background:#2e7d32;
+    border:1px solid #1b5e20;
+    color:white;
+}
+
+.status-btn[data-status="0"] {
+    background:#c62828;
+    border:1px solid #8e0000;
+    color:white;
+}
+
+/* ===== QUANDO SELECIONADO ===== */
+
+.status-btn.selected {
+    opacity:1;
+    filter:saturate(130%);
+    transform:scale(1.08);      /* MAIS REALCE */
+    box-shadow:
+        0 0 12px rgba(0,0,0,0.5),
+        0 0 18px rgba(0,0,0,0.3);
+}
+
+/* CORES IGUAIS AO PHP */
+
+
+
+
+body {
+    background-color: #5dade2;
+    min-height: 100vh;
+}
+
+
+
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.row.g-2 {
+    margin-bottom: 12px;
+}
+
+.form-control,
+.form-select {
+    padding: 4px 8px;
+    font-size: 0.9rem;
+}
+
+
+.container-fluid {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.card-body {
+    padding: 10px;
+}
+
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+input, select {
+    height: 42px !important;
+}
+
+
+.form-control:placeholder-shown {
+    background-color:#fff9c4 !important;
+}
+
+.form-select:invalid {
+    background-color:#fff9c4 !important;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container-fluid py-2">
+    <div class="row g-2">
+
+        <!-- COLUNA PRINCIPAL -->
+        <div class="col-md-9">
+
+			<div class="card" style="background-color:rgb(177,178,179);">
+
+			<div class="card-header text-white text-center"
+				style="background-color:#0d47a1;">
+			Data Registro:
+			{{ ficha.dataregistro.strftime('%d/%m/%Y %H:%M:%S') if ficha.dataregistro }}
+			- {{ ficha.respmatricula }}
+
+			Data Alteração:
+			{{ ficha.dataalteracao.strftime('%d/%m/%Y %H:%M:%S') if ficha.dataalteracao }}
+			- {{ ficha.respalteracao }}
+			</div>
+
+			<div class="card-body">
+
+			<form method="POST">
+
+			<input type="hidden" name="situacao" id="situacao" value="{{ ficha.situacao or '' }}">
+			<input type="hidden" name="turnopbm" id="turnopbm" value="{{ ficha.turnopbm or '' }}">
+
+			<!-- ===== BARRA SUPERIOR ===== -->
+			<div class="row g-2 mb-2">
+
+			<div class="col-md">
+			<div class="dropdown">
+			<button class="btn btn-light dropdown-toggle w-100" data-bs-toggle="dropdown">
+			<i class="bi bi-printer"></i> Imprimir Documentos
+			</button>
+			<ul class="dropdown-menu">
+
+			<li>
+			<a class="dropdown-item"
+			href="{{ url_for('main.termo_imagem', id=ficha.id) }}"
+			target="_blank">
+			Termo de Uso de Imagem
+			</a>
+			</li>
+
+			<li>
+			<a class="dropdown-item"
+			href="{{ url_for('main.certificado', id=ficha.id) }}"
+			target="_blank">
+			Certificado de Participação
+			</a>
+			</li>
+
+			<li>
+			<a class="dropdown-item"
+			href="{{ url_for('main.baixa_renda', id=ficha.id) }}"
+			target="_blank">
+			Declaração de Baixa Renda
+			</a>
+			</li>
+
+			<li>
+			<a class="dropdown-item"
+			href="{{ url_for('main.certificado_promocao', id=ficha.id) }}"
+			target="_blank">
+			Certificado de Promoção
+			</a>
+			</li>
+
+			<li>
+			<a class="dropdown-item"
+			href="{{ url_for('main.declaracao_jovem_candango', id=ficha.id) }}"
+			target="_blank">
+			Declaração Jovem Candango
+			</a>
+			</li>
+
+			<li>
+				<a class="dropdown-item"
+				   href="{{ url_for('main.carteirinha', id=ficha.id) }}"
+				   target="_blank">
+				   Carteirinha
+				</a>
+			</li>
+
+			<li>
+				<a class="dropdown-item"
+				   href="{{ url_for('main.declaracao_participacao', id=ficha.id) }}"
+				   target="_blank">
+				   Declaração de Participação
+				</a>
+			</li>
+
+			<li>
+				<a class="dropdown-item"
+				   href="{{ url_for('main.declaracao_pais', id=ficha.id) }}"
+				   target="_blank">
+				   Declaração Pais
+				</a>
+			</li>
+
+			</ul>
+			</div>
+			</div>
+
+			<div class="col-md-2">
+			<input class="form-control" name="localpbm" value="{{ ficha.localpbm }}">
+			</div>
+
+			<div class="col-md">
+			<div class="turno-buttons">
+			<button type="button"
+					class="turno-btn {% if ficha.turnopbm=='MATUTINO' %}selected{% endif %}"
+					data-turno="MATUTINO"
+					onclick="setTurno('MATUTINO', this)">
+				MATUTINO
+			</button>
+
+			<button type="button"
+					class="turno-btn {% if ficha.turnopbm=='VESPERTINO' %}selected{% endif %}"
+					data-turno="VESPERTINO"
+					onclick="setTurno('VESPERTINO', this)">
+				VESPERTINO
+			</button>
+			<button type="button"
+					class="turno-btn {% if ficha.turnopbm=='RESERVA' %}selected{% endif %}"
+					data-turno="RESERVA"
+					onclick="setTurno('RESERVA', this)">
+				RESERVA
+			</button>
+			</div>
+			</div>
+
+			<div class="col-md-2 d-flex gap-2">
+			<button type="button"
+					class="status-btn w-100 {% if ficha.situacao=='1' %}selected{% endif %}"
+					data-status="1"
+					onclick="setStatus('1', this)">
+				Ativo
+			</button>
+
+			<button type="button"
+					class="status-btn w-100 {% if ficha.situacao=='0' %}selected{% endif %}"
+					data-status="0"
+					onclick="setStatus('0', this)">
+				Inativo
+			</button>
+			</div>
+
+			<div class="col-md-1">
+			<input class="form-control text-center" value="{{ idade  }}" readonly>
+			</div>
+
+			</div>
+
+			<hr>
+
+			<!-- ===== MATRÍCULA / GRADUAÇÃO / NOME ===== -->
+			<div class="row g-2">
+
+			<div class="col-md-1">
+			<input class="form-control" name="idmatricula" value="{{ ficha.id }}" readonly>
+			</div>
+
+			<div class="col-md">
+			<select class="form-select" name="graduacao">
+			<option value="">Graduação</option>
+			<option {% if ficha.graduacao=='RECRUTA-MIRIM' %}selected{% endif %}>RECRUTA-MIRIM</option>
+			<option {% if ficha.graduacao=='SOLDADO-MIRIM' %}selected{% endif %}>SOLDADO-MIRIM</option>
+			<option {% if ficha.graduacao=='CABO-MIRIM' %}selected{% endif %}>CABO-MIRIM</option>
+			<option {% if ficha.graduacao=='3º SARGENTO-MIRIM' %}selected{% endif %}>3º SARGENTO-MIRIM</option>
+			<option {% if ficha.graduacao=='2º SARGENTO-MIRIM' %}selected{% endif %}>2º SARGENTO-MIRIM</option>
+			<option {% if ficha.graduacao=='1º SARGENTO-MIRIM' %}selected{% endif %}>1º SARGENTO-MIRIM</option>
+			</select>
+			</div>
+
+			<div class="col-md-6">
+			<input class="form-control" name="nome"  placeholder="Nome Completo" value="{{ ficha.nome|upper }}">
+			</div>
+
+			<div class="col-md-2">
+			<input class="form-control" name="nomeguerra"  placeholder="Nome de Guerra" value="{{ ficha.nomeguerra or '' }}">
+			</div>
+
+			</div>
+
+			<!-- ===== SEXO / NASCIMENTO / CPF ===== -->
+			<div class="row g-2 mt-2">
+
+			<div class="col-md-4">
+			<select class="form-select" name="sexo">
+			<option value="">Sexo</option>
+			<option value="MASCULINO" {% if ficha.sexo=='MASCULINO' %}selected{% endif %}>Masculino</option>
+			<option value="FEMININO" {% if ficha.sexo=='FEMININO' %}selected{% endif %}>Feminino</option>
+			</select>
+			</div>
+
+			<div class="col-md-4">
+			<input type="date" class="form-control" name="datanascimento"  placeholder="Data de Nascimento" value="{{ ficha.datanascimento or '' }}">
+			</div>
+
+			<div class="col-md-4">
+			<input type="text" class="form-control" name="cpf"  placeholder="CPF" value="{{ ficha.cpf or '' }}">
+			</div>
+
+			</div>
+
+			<!-- ===== ENDEREÇO ===== -->
+			<div class="row g-2 mt-2">
+			<div class="col-12">
+			<input type="text" class="form-control" name="endereco"  placeholder="ENDEREÇO" value="{{ ficha.endereco or '' }}">
+			</div>
+			</div>
+
+			<!-- ===== PAIS ===== -->
+			<div class="row g-2 mt-2">
+			<div class="col-md-6">
+			<input class="form-control" name="nomepai"  placeholder="Nome do Pai" value="{{ ficha.nomepai or '' }}">
+			</div>
+			<div class="col-md-6">
+			<input class="form-control" name="telpai"  placeholder="Telefone Pai" value="{{ ficha.telpai or '' }}">
+			</div>
+			<div class="col-md-6">
+			<input class="form-control" name="nomemae"  placeholder="Nome da Mae" value="{{ ficha.nomemae or '' }}">
+			</div>
+			<div class="col-md-6">
+			<input class="form-control" name="telmae"  placeholder="Teledone da Mae" value="{{ ficha.telmae or '' }}">
+			</div>
+			</div>
+
+			<!-- ===== RESPONSÁVEL ===== -->
+			<div class="row g-2 mt-2">
+			<div class="col-md-3">
+			<input class="form-control" name="pessoaresp"  placeholder="Nome do Responsavel" value="{{ ficha.pessoaresp or '' }}">
+			</div>
+			<div class="col-md-3">
+			<input class="form-control" name="parentesco"  placeholder="Parentesco" value="{{ ficha.parentesco or '' }}">
+			</div>
+			<div class="col-md-6">
+			<input class="form-control" name="telresp"  placeholder="Telefone do Responsavel" value="{{ ficha.telresp or '' }}">
+			</div>
+			</div>
+
+			<!-- ===== CONTATO / TRANSPORTE ===== -->
+			<div class="row g-2 mt-2">
+			<div class="col-md-6">
+			<input class="form-control" name="email"  placeholder="Email" value="{{ ficha.email or '' }}">
+			</div>
+			<div class="col-md-6">
+			<select class="form-select" name="rotaonibus">
+			<option value="MEIOS PRÓPRIOS" {% if ficha.rotaonibus=='MEIOS PRÓPRIOS' %}selected{% endif %}>MEIOS PRÓPRIOS</option>
+			<option value="SETOR O / EXPANSÃO" {% if ficha.rotaonibus=='SETOR O / EXPANSÃO' %}selected{% endif %}>SETOR O / EXPANSÃO</option>
+			<option value="P NORTE / SOL NASCENTE" {% if ficha.rotaonibus=='P NORTE / SOL NASCENTE' %}selected{% endif %}>P NORTE / SOL NASCENTE</option>
+			<option value="P SUL / POR DO SOL" {% if ficha.rotaonibus=='P SUL / POR DO SOL' %}selected{% endif %}>P SUL / POR DO SOL</option>
+			</select>
+			</div>
+			</div>
+
+			<!-- ===== ESCOLA ===== -->
+			<div class="row g-2 mt-2">
+			<div class="col-md-6">
+			<input class="form-control" name="escola"  placeholder="Escola" value="{{ ficha.escola or '' }}">
+			</div>
+			<div class="col-md-3">
+			<input class="form-control" name="serie"  placeholder="Ano Escolar" value="{{ ficha.serie or '' }}">
+			</div>
+			<div class="col-md-3">
+			<select class="form-select" name="turnoescola">
+			<option value="MATUTINO" {% if ficha.turnoescola=='MATUTINO' %}selected{% endif %}>MATUTINO</option>
+			<option value="VESPERTINO" {% if ficha.turnoescola=='VESPERTINO' %}selected{% endif %}>VESPERTINO</option>
+			</select>
+			</div>
+			</div>
+
+			<!-- ===== UNIFORME / SANGUE ===== -->
+			<div class="row g-2 mt-2">
+			<div class="col-md-2">
+			<input class="form-control" name="numero_uniforme"  placeholder="Numero do uniforme" value="{{ ficha.numero_uniforme or '' }}">
+			</div>
+			<div class="col-md-2">
+			<input class="form-control" name="numero_calcado"  placeholder="Numero do Calcado" value="{{ ficha.numero_calcado or '' }}">
+			</div>
+			<div class="col-md-2">
+			<select class="form-select" name="sangue">
+			<option value="">Tipo Sanguíneo</option>
+			{% for tipo in ['A+','A-','B+','B-','AB+','AB-','O+','O-'] %}
+			<option value="{{ tipo or '' }}" {% if ficha.sangue==tipo %}selected{% endif %}>{{ tipo }}</option>
+			{% endfor %}
+			</select>
+			</div>
+			</div>
+
+			<!-- ===== SUSPENSÃO / OBSERVAÇÕES ===== -->
+			<div class="row g-2 mt-2">
+			<div class="col-md-3">
+			<select class="form-select" name="possui_neurodivergencia">
+			<option value="nao" {% if ficha.possui_neurodivergencia=='nao' %}selected{% endif %}>Neurodivergência? NÃO</option>
+			<option value="sim" {% if ficha.possui_neurodivergencia=='sim' %}selected{% endif %}>Neurodivergência? SIM</option>
+			</select>
+			</div>
+
+			<div class="col-md-3">
+			<input type="number" class="form-control" name="dias_suspensao" value="{{ ficha.dias_suspensao or 0 }}">
+			</div>
+
+			<div class="col-md-3">
+			<select class="form-select" name="desloca_sozinho">
+			<option value="nao" {% if ficha.desloca_sozinho=='nao' %}selected{% endif %}>Pode se deslocar sozinho? NÃO</option>
+			<option value="sim" {% if ficha.desloca_sozinho=='sim' %}selected{% endif %}>Pode se deslocar sozinho? SIM</option>
+			</select>
+			</div>
+
+			<div class="col-md-3">
+			<select class="form-select" name="possui_observacoes">
+			<option value="nao" {% if ficha.possui_observacoes=='nao' %}selected{% endif %}>Possui observações? NÃO</option>
+			<option value="sim" {% if ficha.possui_observacoes=='sim' %}selected{% endif %}>Possui observações? SIM</option>
+			</select>
+			</div>
+
+			<div class="col-md-12">
+			<textarea class="form-control" name="observacoes"  placeholder="Observacoes" rows="3">{{ ficha.observacoes or '' }}</textarea>
+			</div>
+
+			</div>
+
+			<div class="text-center mt-3">
+			<button class="btn btn-primary">Salvar Alterações</button>
+			<button type="button" class="btn btn-secondary" onclick="history.back()">Voltar</button>
+			<button type="button" class="btn btn-danger" onclick="window.close()">Fechar</button>
+			</div>
+
+			</form>
+		</div>
+	</div>
+</div>
+	
+<!-- ================= COLUNA LATERAL ================= -->
+
+<div class="col-md-3">
+
+<div class="card mb-3" style="background-color:rgb(210,210,218);">
+<div class="card-body text-center">
+
+{% if ficha.foto %}
+<img src="{{ url_for('static', filename='images/' + ficha.foto) }}"
+     class="img-fluid rounded shadow mb-3"
+     style="width:300px; height:300px; object-fit:contain;">
+{% else %}
+<img src="{{ url_for('static', filename='images/CABO-MIRIM.png') }}"
+     class="img-fluid rounded shadow mb-3"
+     style="width:300px; height:300px; object-fit:contain;">
+{% endif %}
+
+<!-- FORMULÁRIO DE UPLOAD -->
+<form method="POST"
+      action="{{ url_for('main.upload_foto', id=ficha.id) }}"
+      enctype="multipart/form-data"
+      class="mt-2">
+
+    <div class="input-group input-group-sm">
+        <input type="file"
+               class="form-control"
+               name="foto"
+               accept="image/*"
+               required>
+
+        <button class="btn btn-primary">
+            Upload
+        </button>
+    </div>
+</form>
+
+</div>
+</div>
+
+<div class="card" style="background-color:rgb(210,210,218);">
+<div class="card-body">
+
+<h5 class="text-center text-dark">Histórico do Aluno</h5>
+
+<div style="max-height:200px; overflow-y:auto;">
+{% for h in historicos %}
+<div class="p-2 mb-2 bg-light rounded">
+<small class="text-muted">
+{{ h.data.strftime('%d/%m/%Y %H:%M') }} - {{ h.matricula }}
+</small>
+<p class="mb-0">{{ h.historico or '' }}</p>
+</div>
+{% else %}
+<p class="text-center text-muted">Nenhum histórico encontrado</p>
+{% endfor %}
+</div>
+
+<form method="POST" class="mt-2">
+<textarea class="form-control mb-2"
+name="novo_historico"
+rows="3"
+placeholder="Digite o histórico..."
+required></textarea>
+
+<button class="btn btn-light btn-sm w-100">
+Adicionar Histórico
+</button>
+
+</form>
+
+</div>
+</div>
+
+</div>
+
+<script>
+function setTurno(valor, btn){
+document.getElementById("turnopbm").value = valor;
+document.querySelectorAll(".turno-btn").forEach(b=>b.classList.remove("selected"));
+btn.classList.add("selected");
+}
+function setStatus(valor, btn){
+document.getElementById("situacao").value = valor;
+document.querySelectorAll(".status-btn").forEach(b=>b.classList.remove("selected"));
+btn.classList.add("selected");
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

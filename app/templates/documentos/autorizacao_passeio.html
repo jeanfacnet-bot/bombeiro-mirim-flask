@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Autorização</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+@page {
+    size: A4;
+    margin: 10mm;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+}
+
+.autorizacao {
+    width: 100%;
+    height: 135mm;
+    padding: 8mm;
+    margin-bottom: 8mm;
+    border: 1px solid #000;
+    box-sizing: border-box;
+    page-break-inside: avoid;
+    position: relative;
+}
+
+@media print {
+    .btn {
+        display: none;
+    }
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="text-end mb-4">
+    <button onclick="window.print()" class="btn btn-primary">
+        🖨 Imprimir
+    </button>
+</div>
+
+{% for aluno in alunos %}
+
+<div class="autorizacao">
+
+    <div class="text-center mb-4">
+
+        <table width="100%" border="0">
+            <tr>
+                <td width="20%" align="center">
+                    <img src="{{ url_for('static', filename='images/cbmdf.jpg') }}" width="90">
+                </td>
+
+                <td width="60%" align="center">
+                    <strong>
+                        CORPO DE BOMBEIROS MILITAR DO DISTRITO FEDERAL<br>
+                        ASSESSORIA DE PROGRAMAS SOCIAIS<br>
+                        PROGRAMA BOMBEIRO MIRIM
+                    </strong>
+                </td>
+
+                <td width="20%" align="center">
+                    <img src="{{ url_for('static', filename='images/PBM.png') }}" width="70">
+                </td>
+            </tr>
+        </table>
+
+        <hr>
+
+        <h5><strong>AUTORIZAÇÃO PARA PARTICIPAÇÃO EM PASSEIO</strong></h5>
+
+    </div>
+
+    <p>
+        Eu, ________________________________________________,
+        responsável pelo(a) aluno(a)
+        <strong>{{ aluno.nome.upper() }}</strong>,
+        autorizo sua participação no passeio/evento
+        <strong>{{ passeio.nome_passeio.upper() }}</strong>,
+        que será realizado no 
+        <strong>{{ passeio.local_passeio.upper() }}</strong>,
+        no dia
+        <strong>{{ passeio.data_passeio.strftime('%d/%m/%Y') }}</strong>
+        com início às
+        <strong>{{ passeio.hora_passeio.strftime('%H:%M') }}</strong>.
+    </p>
+
+    <br><br>
+
+    <p>
+        Declaro estar ciente das atividades e autorizo sua participação.
+    </p>
+
+    <br><br><br>
+
+    <p>
+        Data: ____ / ____ / ______
+    </p>
+
+    <div style="position:absolute; bottom:20mm; width:100%; text-align:center;">
+        ___________________________________________________<br>
+        Assinatura do Responsável
+    </div>
+
+</div>
+
+{% endfor %}
+
+</body>
+</html>

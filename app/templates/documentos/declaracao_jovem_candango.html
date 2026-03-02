@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Declaração Jovem Candango</title>
+
+<style>
+body {
+    margin: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.justify {
+    text-align: justify;
+    line-height: 1.5;
+}
+</style>
+</head>
+
+<body onload="window.print()">
+
+<table width="80%" border="0" align="center">
+<tr>
+<td align="center">
+<img src="{{ url_for('static', filename='images/cbmdf.jpg') }}"
+width="104" height="107">
+</td>
+
+<td align="center">
+<strong>
+CORPO DE BOMBEIROS MILITAR DO DISTRITO FEDERAL<br>
+ASSESSORIA DE PROGRAMAS SOCIAIS<br>
+PROGRAMA BOMBEIRO MIRIM
+</strong>
+</td>
+
+<td align="center">
+<img src="{{ url_for('static', filename='images/PBM.png') }}"
+width="77" height="97">
+</td>
+</tr>
+</table>
+
+<table width="80%" border="0" align="center">
+<tr>
+<td align="center">
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<p><strong>DECLARAÇÃO</strong></p>
+
+<p>&nbsp;</p>
+
+<p class="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+DECLARO para os devidos fins, que o(a) aluno(a)
+<strong>{{ ficha.nome }}</strong>,
+Matc. <strong>{{ ficha.id }}</strong>,
+data de nascimento:
+<strong>
+{% if ficha.datanascimento %}
+{{ ficha.datanascimento.strftime('%d/%m/%Y') }}
+{% endif %}
+</strong>
+CPF nº <strong>{{ ficha.cpf }}</strong>
+tem seu registro cadastrado no Programa Bombeiro Mirim do Distrito Federal,
+LEI Nº 2.449, DE 24 DE SETEMBRO DE 1999,
+estando devidamente qualificado para concorrer a uma vaga dentro do percentual destinado em Lei aos inscritos no Programa Bombeiro Mirim em conformidade com a LEI Nº 5.216, DE 14 DE NOVEMBRO DE 2013, destinação de vagas a adolescentes e jovens do Programa de Bombeiro Mirim do Distrito Federal.
+</p>
+
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Por ser verdade, firmo o presente.
+</p>
+
+<p align="right">
+Brasília-DF, {{ data_extenso }}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</p>
+
+<br><br><br>
+
+<div align="center">
+<strong>
+__________________________________________________<br>
+Coordenador
+</strong>
+</div>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

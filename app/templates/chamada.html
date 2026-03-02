@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Alunos Matriculados</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: rgb(192, 217, 241); }
+
+        .pelotao-title {
+            background: #dc3545;
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .presence-box {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 1px solid #000;
+            margin: 2px;
+        }
+
+        .nome-suspenso {
+            background-color: red;
+            color: white;
+            padding: 3px 6px;
+            border-radius: 4px;
+        }
+		
+		.table td {
+			font-size: 12pt;
+			text-transform: uppercase;
+			padding: 2px;
+		}
+
+		.table tbody tr {
+			height: 25px;
+		}
+
+		.presence-box {
+			width: 20px;
+			height: 20px;
+		}
+    </style>
+</head>
+<body>
+
+<div class="container-fluid py-4">
+
+    <div class="row mb-3">
+        <div class="col-md-4 mx-auto">
+            <input type="text" id="searchInput"
+                   class="form-control"
+                   placeholder="Buscar aluno...">
+        </div>
+    </div>
+
+    {% for turno, lista in estrutura.items() %}
+
+        <div class="card mb-4">
+            <div class="card-body">
+
+                <h4 class="pelotao-title">
+                    TURNO {{ turno.upper() }}
+                </h4>
+
+                {% set pelotoes = ["3º PELOTÃO", "2º PELOTÃO", "1º PELOTÃO"] %}
+
+                {% for pel in pelotoes %}
+
+                    <h4 class="pelotao-title d-flex justify-content-between align-items-center">
+						<span>
+							{{ pel }} - Total:
+							{{ lista | selectattr("pelotao","equalto",pel) | list | length }}
+							- {{ turno }}
+						</span>
+
+						<button onclick="printSection(this)"
+								class="btn btn-light btn-sm d-print-none">
+							<i class="fas fa-print"></i> Imprimir
+						</button>
+					</h4>
+
+                    <table class="table table-sm table-hover">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Nº</th>
+                                <th>Nome</th>
+                                <th>Idade</th>
+                                <th>Presença</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for item in lista if item.pelotao == pel %}
+
+						<tr>
+							<td>{{ loop.index }}</td>
+
+                                <td class="nome-aluno">
+                                    <a href="{{ url_for('main.editar', id=item.aluno.id) }}"
+									   target="_blank"
+									   class="text-dark text-decoration-none
+									   {% if item.suspenso %}nome-suspenso{% endif %}">
+
+									   {{ item.aluno.nome.upper() }}
+
+									   <span class="text-danger">
+										   {{ item.aluno.graduacao }}
+									   </span>
+
+									   {% if item.aluno.possui_observacoes == 'sim' %}
+										   <i class="fas fa-comment text-warning ms-1"
+											  title="Possui observações"></i>
+									   {% endif %}
+
+									   {% if item.aluno.desloca_sozinho == 'sim' %}
+										   <i class="fas fa-walking text-success ms-1"
+											  title="Pode se deslocar sozinho"></i>
+									   {% endif %}
+
+									   {% if item.aluno.possui_neurodivergencia == 'sim' %}
+										   <i class="fas fa-brain text-primary ms-1"
+											  title="Neurodivergente"></i>
+									   {% endif %}
+
+									</a>
+                                </td>
+
+                                <td>{{ item.idade }}</td>
+
+                                <td>
+                                    {% for i in range(10) %}
+                                        <span class="presence-box"></span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+
+                            
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                {% endfor %}
+
+            </div>
+        </div>
+
+    {% endfor %}
+	
+	{% if rotas_estrutura %}
+
+	{% for turno, rotas in rotas_estrutura.items() %}
+
+	{% if rotas %}
+
+	<div class="card mb-4" id="rotas-{{ turno }}">
+	<div class="card-body">
+
+	<h4 class="pelotao-title d-flex justify-content-between align-items-center">
+
+		<span>
+			Lista por Rota de Ônibus - {{ turno }}
+		</span>
+
+		<button onclick="printTurnoRotas('{{ turno }}')"
+				class="btn btn-light btn-sm d-print-none">
+			<i class="fas fa-print"></i> Imprimir Todas as Rotas
+		</button>
+
+	</h4>
+
+	{% for rota, alunos in rotas.items() %}
+
+	<h5 class="mt-4 d-flex justify-content-between align-items-center">
+
+		<span class="text-danger">
+			Rota: {{ rota }} - Total: {{ alunos|length }}
+		</span>
+
+		<button onclick="printSection(this)"
+				class="btn btn-light btn-sm d-print-none">
+			<i class="fas fa-print"></i> Imprimir Rota
+		</button>
+
+	</h5>
+
+	<table class="table table-sm table-hover">
+	<thead class="table-primary">
+	<tr>
+	<th>Nº</th>
+	<th>Nome</th>
+	<th>Idade</th>
+	</tr>
+	</thead>
+
+	<tbody>
+
+	{% for item in alunos %}
+	<td>{{ loop.index }}</td>
+
+	<td class="nome-aluno">
+	<a href="{{ url_for('main.editar', id=item.aluno.id) }}"
+	   target="_blank"
+	   class="text-dark text-decoration-none">
+
+	   {{ item.aluno.nome.upper() }}
+	</a>
+	</td>
+
+	<td>{{ item.idade }} anos</td>
+
+	</tr>
+
+	
+	{% endfor %}
+
+	</tbody>
+	</table>
+
+	{% endfor %}
+
+	</div>
+	</div>
+
+	{% endif %}
+	{% endfor %}
+
+	{% endif %}
+
+</div>
+
+<script>
+document.getElementById("searchInput").addEventListener("keyup", function(){
+    let search = this.value.toLowerCase();
+    let rows = document.querySelectorAll("tbody tr");
+
+    rows.forEach(row => {
+        let nome = row.querySelector(".nome-aluno").innerText.toLowerCase();
+        row.style.display = nome.includes(search) ? "" : "none";
+    });
+});
+</script>
+
+<script>
+function printSection(button) {
+
+    let sectionToPrint;
+    let title;
+
+    // Se for pelotão
+    if (button.closest(".pelotao-title")) {
+
+        sectionToPrint = button.closest(".pelotao-title")
+                               .nextElementSibling;
+
+        title = button.closest(".pelotao-title")
+                      .innerText;
+
+    } else {
+
+        // Se for rota
+        sectionToPrint = button.closest(".mt-4")
+                               .nextElementSibling;
+
+        title = button.closest(".mt-4")
+                      .querySelector("span")
+                      .innerText;
+    }
+
+    const printWindow = window.open('', '', 'height=600,width=1000');
+
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Impressão</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <style>
+                @page { size: landscape; margin: 1cm; }
+                body { background: white; }
+                .presence-box {
+                    display:inline-block;
+                    width:20px;
+                    height:20px;
+                    border:1px solid #000;
+                    margin:0 3px;
+                }
+                .btn { display:none !important; }
+            </style>
+        </head>
+        <body>
+            <div class="container-fluid">
+                <h4>${title}</h4>
+                ${sectionToPrint.outerHTML}
+            </div>
+        </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+
+    setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+    }, 300);
+}
+</script>
+
+<script>
+function printTurnoRotas(turno) {
+
+    let section = document.getElementById("rotas-" + turno);
+
+    const printWindow = window.open('', '', 'height=600,width=1000');
+
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Impressão</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <style>
+                @page { size: landscape; margin: 1cm; }
+                body { background: white; }
+                .presence-box {
+                    display:inline-block;
+                    width:20px;
+                    height:20px;
+                    border:1px solid #000;
+                    margin:0 3px;
+                }
+                .btn { display:none !important; }
+            </style>
+        </head>
+        <body>
+            <div class="container-fluid">
+                ${section.innerHTML}
+            </div>
+        </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+
+    setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+    }, 300);
+}
+</script>
+
+</body>
+</html>

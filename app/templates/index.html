@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro Bombeiro Mirim</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+   
+	
+<link href="{{ url_for('static', filename='css/cadastromirim.css') }}" rel="stylesheet">	
+</head>
+
+<body>
+<div class="container-fluid py-5">
+<div class="row">
+
+<!-- =================== PAINEL LATERAL =================== -->
+{% if not externo %}
+
+<div class="col-md-3">
+
+<div class="card mb-4">
+<div class="card-header bg-primary text-white text-center">
+Total por Localidade
+</div>
+
+<div class="card-body">
+
+{% for row in totais_localidade %}
+<div class="d-flex justify-content-between align-items-center p-1 border-bottom">
+<span class="fw-bold" style="font-size: 0.9rem;">
+{{ row.localpbm }}
+</span>
+
+<div>
+<span class="badge bg-primary rounded-pill me-1" style="min-width: 40px;">
+{{ row.total_7_14 or 0 }}
+</span>
+
+<span class="badge bg-danger rounded-pill" style="min-width: 40px;">
+{{ row.total_15 or 0 }}
+</span>
+</div>
+</div>
+{% endfor %}
+
+</div>
+
+
+
+<!-- =================== ESTATÍSTICAS =================== -->
+
+<div class="alert alert-info mt-2">
+
+<div class="statistics-container">
+
+<div class="stat-item">
+<i class="fas fa-child"></i>
+<div class="stat-label">Ativas</div>
+<div class="stat-value">{{ total_ativos }}</div>
+</div>
+
+<div class="stat-item">
+<i class="fas fa-clock"></i>
+<div class="stat-label">Espera</div>
+<div class="stat-value">{{ total_reserva }}</div>
+</div>
+
+<div class="stat-item">
+<i class="fas fa-graduation-cap"></i>
+<div class="stat-label">J. Candango</div>
+<div class="stat-value">{{ total_jovem_candango }}</div>
+</div>
+
+<div class="stat-item">
+<i class="fas fa-database"></i>
+<div class="stat-label">Registros</div>
+<div class="stat-value">{{ total_registros }}</div>
+</div>
+
+{% if current_user.nivel in [2,3] %}
+
+<div class="stat-item">
+<i class="fas fa-sun"></i>
+<div class="stat-label">MATUTINO</div>
+<div class="stat-value">{{ total_matutino }}</div>
+</div>
+
+<div class="stat-item">
+<i class="fas fa-moon"></i>
+<div class="stat-label">VESPERTINO</div>
+<div class="stat-value">{{ total_vespertino }}</div>
+</div>
+
+{% endif %}
+
+{% if usuario.obm.upper() == "CEILÂNDIA" %}
+{% for rota in rotas %}
+<div class="stat-item">
+<i class="fas fa-bus"></i>
+<div class="stat-label">
+{{ rota.rotaonibus or "Não Informado" }}
+({{ rota.turnopbm }})
+</div>
+<div class="stat-value">{{ rota.total }}</div>
+</div>
+{% endfor %}
+{% endif %}
+
+</div>
+
+<div class="stat-item mt-3">
+<i class="fas fa-brain"></i>
+<div class="stat-label">Neurodivergentes</div>
+<div class="stat-value">{{ total_neuro }}</div>
+</div>
+
+</div>
+
+</div>
+</div>
+{% endif %}
+<!-- =================== FORMULÁRIO CENTRAL =================== -->
+<div class="{% if externo %}col-md-8 offset-md-2{% else %}col-md-6{% endif %}">
+
+    <div class="form-section card mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between">
+            <h4 class="mb-0">Cadastro Bombeiro Mirim</h4>
+            <div>
+                <span class="badge bg-light text-dark">Usuário: {{ usuario.usuario }}</span>
+                <span class="badge bg-secondary">OBM: {{ usuario.obm }}</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+			<!-- 🔥 MENSAGENS FLASH -->
+			{% with messages = get_flashed_messages(with_categories=true) %}
+				{% if messages %}
+					{% for category, message in messages %}
+						<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+							{{ message }}
+							<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+						</div>
+					{% endfor %}
+				{% endif %}
+			{% endwith %}
+
+			<form method="POST" action="{{ url_for('main.cadastrar') }}">
+				
+				{% if externo %}
+				<input type="hidden" name="origem" value="externo">
+				{% endif %}
+
+			<!-- ================= DADOS PESSOAIS ================= -->
+			<h5 class="mb-3">Dados Pessoais</h5>
+
+			<div class="row g-3">
+
+			<div class="col-md-6">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-user"></i></span>
+			<input type="text" class="form-control" name="nome" placeholder="Nome Completo" required>
+			</div>
+			</div>
+
+			<div class="col-md-3">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-id-badge"></i></span>
+			<input type="text" class="form-control" name="nomeguerra" placeholder="Nome de Guerra">
+			</div>
+			</div>
+
+			<div class="col-md-3">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
+			<select class="form-select" name="sexo" required>
+			<option value="">Sexo</option>
+			<option value="Masculino">Masculino</option>
+			<option value="Feminino">Feminino</option>
+			</select>
+			</div>
+			</div>
+
+			</div>
+
+			<div class="row g-3 mt-2">
+
+			<div class="col-md-3">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-calendar"></i></span>
+			<input type="date" class="form-control" name="datanascimento" required>
+			</div>
+			</div>
+
+			<div class="col-md-3">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-id-card"></i></span>
+			<input type="text" class="form-control" name="cpf" placeholder="CPF" required>
+			</div>
+			</div>
+
+			<div class="col-md-3">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-tint"></i></span>
+			<input type="text" class="form-control" name="sangue" placeholder="Tipo Sanguíneo">
+			</div>
+			</div>
+
+			{% if externo %}
+			<div class="col-md-6">
+				<div class="input-group">
+					<span class="input-group-text">
+						<i class="fas fa-map-marker-alt"></i>
+					</span>
+					<select class="form-select" name="localpbm" required>
+						<option value="">Qual o local do Bombeiro Mirim? </option>
+						{% for obm in obms %}
+							<option value="{{ obm }}">{{ obm }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+			{% endif %}
+
+			{% if externo %}
+
+			<input type="hidden" name="turnopbm" value="RESERVA">
+
+			<div class="col-md-6">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-clock"></i></span>
+			<input type="text" class="form-control" value="RESERVA" readonly>
+			</div>
+			</div>
+
+			{% else %}
+
+			<div class="col-md-3">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-clock"></i></span>
+			<select class="form-select" name="turnopbm">
+			<option value="RESERVA">RESERVA</option>
+			<option value="MATUTINO">MATUTINO</option>
+			<option value="VESPERTINO">VESPERTINO</option>
+			</select>
+			</div>
+			</div>
+
+			{% endif %}
+
+			</div>
+
+			<hr>
+
+			<!-- ================= ENDEREÇO ================= -->
+
+			<h5 class="mb-3">Endereço e Contato</h5>
+
+			<div class="row g-3">
+
+			<div class="col-md-12">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-home"></i></span>
+			<input type="text" class="form-control" name="endereco" placeholder="Endereço Completo">
+			</div>
+			</div>
+
+			<div class="col-md-4">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-phone"></i></span>
+			<input type="text" class="form-control" name="teloutros" placeholder="Telefone">
+			</div>
+			</div>
+
+			<div class="col-md-8">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-envelope"></i></span>
+			<input type="email" class="form-control" name="email" placeholder="E-mail">
+			</div>
+			</div>
+
+			</div>
+
+			<hr>
+
+			<!-- ================= RESPONSÁVEIS ================= -->
+
+			<h5 class="mb-3">Responsáveis</h5>
+
+			<div class="row g-3">
+
+			<div class="col-md-6">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-male"></i></span>
+			<input type="text" class="form-control" name="nomepai" placeholder="Nome do Pai">
+			</div>
+			</div>
+
+			<div class="col-md-6">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-phone"></i></span>
+			<input type="text" class="form-control" name="telpai" placeholder="Telefone do Pai">
+			</div>
+			</div>
+
+			<div class="col-md-6">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-female"></i></span>
+			<input type="text" class="form-control" name="nomemae" placeholder="Nome da Mãe">
+			</div>
+			</div>
+
+			<div class="col-md-6">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-phone"></i></span>
+			<input type="text" class="form-control" name="telmae" placeholder="Telefone da Mãe">
+			</div>
+			</div>
+
+			<div class="col-md-6">
+			<div class="input-group">
+			<span class="input-group-text"><i class="fas fa-user-tie"></i></span>
+			<input type="text" class="form-control" name="pessoaresp" placeholder="Responsável Principal" required>
+			</div>
+			</div>
+
+			<div class="col-md-3">
+			<select class="form-select" name="parentesco">
+			<option value="">Parentesco</option>
+			<option>Pai</option>
+			<option>Mãe</option>
+			<option>Avô</option>
+			<option>Avó</option>
+			<option>Tio</option>
+			<option>Tia</option>
+			<option>Irmão</option>
+			<option>Irmã</option>
+			<option>Vizinho</option>
+			</select>
+			</div>
+
+			<div class="col-md-3">
+			<input type="text" class="form-control" name="telresp" placeholder="Telefone Responsável" required>
+			</div>
+
+			</div>
+
+			<hr>
+
+			<!-- ================= ESCOLA ================= -->
+
+			<h5 class="mb-3">Dados Escolares</h5>
+
+			<div class="row g-3">
+
+			<div class="col-md-6">
+			<input type="text" class="form-control" name="escola" placeholder="Nome da Escola" required>
+			</div>
+
+			<div class="col-md-3">
+			<select class="form-select" name="serie" required>
+			<option value="">Série</option>
+			{% for i in range(1,10) %}
+			<option value="{{ i }}">{{ i }}º Ano</option>
+			{% endfor %}
+			</select>
+			</div>
+
+			<div class="col-md-3">
+			<select class="form-select" name="turnoescola" required>
+			<option value="">Turno Escolar</option>
+			<option value="MATUTINO">MATUTINO</option>
+			<option value="VESPERTINO">VESPERTINO</option>
+			</select>
+			</div>
+
+			</div>
+
+			<hr>
+
+			<!-- ================= COMPLEMENTARES ================= -->
+
+			<h5 class="mb-3">Informações Complementares</h5>
+
+			<div class="row g-3">
+
+			<div class="col-md-2">
+			<input type="number" class="form-control" name="altura" placeholder="Altura (cm)">
+			</div>
+
+			<div class="col-md-2">
+			<input type="number" class="form-control" name="peso" placeholder="Peso (kg)">
+			</div>
+
+			<div class="col-md-4">
+			<select class="form-select" name="pggoverno">
+			<option value="">Recebe Benefício?</option>
+			<option value="S">Sim</option>
+			<option value="N">Não</option>
+			</select>
+			</div>
+
+			<div class="col-md-4">
+			<select class="form-select" name="rotaonibus">
+			<option value="">Rota Ônibus</option>
+			<option>Meios Próprios</option>
+			<option>SETOR O / EXPANSÃO</option>
+			<option>P NORTE / SOL NASCENTE</option>
+			<option>P SUL / POR DO SOL</option>
+			</select>
+			</div>
+
+			<div class="col-md-4">
+			<select class="form-select" name="expbmparente">
+			<option value="">Ex-Bombeiro Mirim na Família?</option>
+			<option value="S">Sim</option>
+			<option value="N">Não</option>
+			</select>
+			</div>
+
+			<div class="col-md-8">
+			<input type="text" class="form-control" name="nomeex" placeholder="Nome do Ex-Bombeiro Mirim">
+			</div>
+
+			<div class="col-md-4">
+			<select class="form-select" name="possui_observacoes">
+			<option value="nao">Possui Observações? NÃO</option>
+			<option value="sim">Possui Observações? SIM</option>
+			</select>
+			</div>
+
+			<div class="col-md-4">
+			<select class="form-select" name="possui_neurodivergencia">
+			<option value="nao">Neurodivergência? NÃO</option>
+			<option value="sim">Neurodivergência? SIM</option>
+			</select>
+			</div>
+
+			<div class="col-md-4">
+			<select class="form-select" name="desloca_sozinho">
+			<option value="nao">Pode se deslocar sozinho? NÃO</option>
+			<option value="sim">Pode se deslocar sozinho? SIM</option>
+			</select>
+			</div>
+
+			<div class="col-md-12">
+			<textarea class="form-control" name="observacoes" rows="3" placeholder="Observações"></textarea>
+			</div>
+
+			</div>
+
+			<hr>
+
+			<div class="text-center mt-4">
+			<button type="submit" class="btn btn-primary btn-lg px-5">
+			<i class="fas fa-save me-2"></i>Cadastrar
+			</button>
+			</div>
+
+			</form>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= LINKS RÁPIDOS ================= -->
+
+{% if not externo %}
+<div class="col-md-3">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0 text-center">Links Rápidos</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="list-group list-group-flush">
+
+                {% if current_user.nivel in [2,3] %}
+
+                    <a href="{{ url_for('main.reserva') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-clock me-2 text-primary"></i>RESERVA
+                    </a>
+
+                    <a href="{{ url_for('main.chamada') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-clipboard-list me-2 text-primary"></i>Alunos Matriculados
+                    </a>
+
+                    <a href="{{ url_for('main.chamada_diaria') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-clipboard-check me-2 text-primary"></i>Chamada Online
+                    </a>
+
+                    <a href="{{ url_for('main.relatorio_chamada') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-calendar-alt me-2 text-primary"></i>Relatório Chamada
+                    </a>
+
+                    <a href="{{ url_for('main.aniversariantes') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-birthday-cake me-2 text-primary"></i>Aniversariantes
+                    </a>
+
+                    <a href="{{ url_for('main.ex_bbmirins') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-address-book me-2 text-primary"></i>Ex-bbmirins
+                    </a>
+
+                    <a href="{{ url_for('main.ajuda') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-question-circle me-2 text-primary"></i>Ajuda
+                    </a>
+
+                    <a href="{{ url_for('main.lista_pais') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-edit me-2 text-primary"></i>Lista Reunião Pais
+                    </a>
+
+                    <a href="{{ url_for('main.uniforme_calcado') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-tshirt me-2 text-primary"></i>Uniforme e Calçados
+                    </a>
+
+                    <a href="{{ url_for('main.passeios') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-map-marked-alt me-2 text-primary"></i>Passeios e Eventos
+                    </a>
+					
+					<a href="{{ url_for('main.inscricao') }}" target="_blank"
+					   class="list-group-item list-group-item-action py-3">
+						<i class="fas fa-user-plus me-2 text-success"></i>Cadastro Externo
+					</a>
+
+                {% endif %}
+
+
+                {% if current_user.nivel in [1,6] %}
+
+                    <a href="{{ url_for('main.estatisticas_sipros') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-users-cog me-2 text-primary"></i>Relatórios SIPROS
+                    </a>
+
+                    <a href="{{ url_for('main.reserva_geral') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-users-cog me-2 text-primary"></i>Reservas Geral
+                    </a>
+
+                    <a href="{{ url_for('main.chamada_geral') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-users-cog me-2 text-primary"></i>Chamada Geral
+                    </a>
+
+                    <a href="{{ url_for('main.lista_pba') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-users-cog me-2 text-primary"></i>Lista PBA
+                    </a>
+
+                    <a href="{{ url_for('main.dashboard_estatisticas') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-chart-bar me-2 text-primary"></i>Estatísticas
+                    </a>
+
+                    <a href="{{ url_for('main.usuarios_online') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-user-clock me-2 text-primary"></i>Usuários Online
+                    </a>
+
+                    <a href="{{ url_for('main.usuarios_externos') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-user-friends me-2 text-primary"></i>Usuários Externos
+                    </a>
+
+                    <a href="{{ url_for('main.gerenciar_usuarios') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-user-cog me-2 text-primary"></i>Gerenciar Usuários
+                    </a>
+
+                    <a href="{{ url_for('main.lanches') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-utensils me-2 text-primary"></i>Lanches
+                    </a>
+
+                    <a href="{{ url_for('main.dashboard') }}" target="_blank"
+                       class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-chart-line me-2 text-primary"></i>Dashboard
+                    </a>
+
+                {% endif %}
+
+</div>
+
+
+                <!-- LOGOUT -->
+
+                <a href="{{ url_for('main.logout') }}"
+                   class="list-group-item list-group-item-action py-3"
+                   onclick="return confirm('Deseja realmente sair?')">
+                    <i class="fas fa-sign-out-alt me-2 text-primary"></i>Sair
+                </a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

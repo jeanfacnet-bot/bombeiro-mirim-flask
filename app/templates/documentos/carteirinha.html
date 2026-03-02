@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Carteirinha</title>
+
+<style>
+body {
+    margin: 10px;
+    font-size: 10px;
+    font-family: Verdana, Geneva, sans-serif;
+}
+
+.container-carteira {
+    position: relative;
+    width: 335px;
+    height: 480px;
+}
+
+/* FOTO */
+.foto {
+    position: absolute;
+    left: 20px;
+    top: 12px;
+    width: 125px;
+    height: 125px;
+}
+
+.foto img {
+    width: 125px;
+    height: 125px;
+    object-fit: cover;
+}
+
+/* UNIDADE */
+.unidade {
+    position: absolute;
+    left: 18px;
+    top: 136px;
+    width: 317px;
+    text-align: center;
+    font-size: 10px;
+}
+
+.unidade strong {
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+/* NOME */
+.nome {
+    position: absolute;
+    left: 19px;
+    top: 197px;
+    width: 300px;
+    text-align: center;
+    font-size: 11px;
+}
+
+.nome strong {
+    text-transform: uppercase;
+}
+
+/* CABEÇALHO */
+.cabecalho {
+    position: absolute;
+    left: 140px;
+    top: 13px;
+    width: 194px;
+    height: 62px;
+    font-size: 8px;
+    text-align: center;
+}
+</style>
+</head>
+
+<body onload="window.print()">
+
+<div class="container-carteira">
+
+    <!-- FUNDO -->
+    <img src="{{ url_for('static', filename='images/fundo/fundocarteira2.png') }}"
+         width="335" height="480">
+
+    <!-- FOTO -->
+    <div class="foto">
+        {% if ficha.foto %}
+            <img src="{{ url_for('static', filename='images/' + ficha.foto) }}"
+                 alt="{{ ficha.nome }}">
+        {% else %}
+            <img src="{{ url_for('static', filename='images/semfoto.png') }}">
+        {% endif %}
+    </div>
+
+    <!-- UNIDADE -->
+    <div class="unidade">
+        Unidade:<br>
+        <strong>{{ ficha.localpbm }}</strong>
+    </div>
+
+    <!-- NOME -->
+    <div class="nome">
+        <strong>{{ ficha.nome }}</strong><br>
+        <span style="font-size:12px;">
+            Mat.: {{ ficha.id }} - {{ ficha.graduacao }}
+        </span>
+    </div>
+
+    <!-- CABEÇALHO -->
+    <div class="cabecalho">
+        GOVERNO DO DISTRITO FEDERAL <br>
+        CORPO DE BOMBEIROS MILITAR DO<br>
+        DISTRITO FEDERAL<br>
+        ASSESSORIA DE PROGRAMAS SOCIAIS
+    </div>
+
+</div>
+
+</body>
+</html>

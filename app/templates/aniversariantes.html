@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aniversariantes do Mês - Bombeiro Mirim</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body { 
+    background-color: rgb(192, 217, 241);
+    text-transform: uppercase;
+}
+.birthday-container {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin: 20px auto;
+}
+.birthday-table th {
+    background: #0d6efd;
+    color: white;
+}
+.birthday-table tr:nth-child(even) {
+    background: #f8f9fa;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container py-4">
+<div class="birthday-container">
+
+<div class="text-end mb-3">
+    <span class="badge bg-primary">
+        Usuário: {{ usuario.usuario }}
+    </span>
+</div>
+
+<div class="mb-3">
+    <form method="get">
+        <select name="month" class="form-select" onchange="this.form.submit()">
+            {% for num, name in months.items() %}
+                <option value="{{ num }}" {% if num == selected_month %}selected{% endif %}>
+                    {{ name }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+
+<div class="text-center">
+    <h5 class="fw-bold text-primary">
+        🎂 Aniversariantes do Mês
+    </h5>
+</div>
+
+<table class="table birthday-table mb-4">
+<thead>
+<tr>
+    <th></th>
+    <th>MATUTINO</th>
+    <th></th>
+</tr>
+</thead>
+<tbody>
+{% if morning_birthdays %}
+    {% for row in morning_birthdays %}
+    <tr>
+        <td>{{ row.data }}</td>
+        <td>{{ row.nome }}</td>
+        <td>{{ row.idade }} ANOS</td>
+    </tr>
+    {% endfor %}
+{% else %}
+<tr>
+    <td colspan="3" class="text-center">
+        Nenhum aniversariante neste turno
+    </td>
+</tr>
+{% endif %}
+</tbody>
+</table>
+
+<table class="table birthday-table">
+<thead>
+<tr>
+    <th></th>
+    <th>VESPERTINO</th>
+    <th></th>
+</tr>
+</thead>
+<tbody>
+{% if afternoon_birthdays %}
+    {% for row in afternoon_birthdays %}
+    <tr>
+        <td>{{ row.data }}</td>
+        <td>{{ row.nome }}</td>
+        <td>{{ row.idade }} ANOS</td>
+    </tr>
+    {% endfor %}
+{% else %}
+<tr>
+    <td colspan="3" class="text-center">
+        Nenhum aniversariante neste turno
+    </td>
+</tr>
+{% endif %}
+</tbody>
+</table>
+
+<div class="text-center mt-4">
+    <button onclick="window.print();" class="btn btn-primary me-2">
+        Imprimir
+    </button>
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary me-2">
+        Voltar
+    </a>
+    <button onclick="window.close();" class="btn btn-danger">
+        Fechar
+    </button>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

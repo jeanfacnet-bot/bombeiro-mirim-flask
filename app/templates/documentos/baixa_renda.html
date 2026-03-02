@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Termo de Baixa Renda</title>
+
+<style>
+body {
+    margin: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.JUST {
+    text-align: justify;
+}
+</style>
+</head>
+
+<body onload="window.print()">
+
+<table width="100%" border="0">
+<tr>
+<td align="center" nowrap>
+<img src="{{ url_for('static', filename='images/cbmdf.jpg') }}"
+width="104" height="107"><br>
+</td>
+
+<td align="center" nowrap>
+<strong>
+CORPO DE BOMBEIROS MILITAR DO DISTRITO FEDERAL<br>
+ASSESSORIA DE PROGRAMAS SOCIAIS<br>
+PROGRAMA BOMBEIRO MIRIM
+</strong>
+</td>
+
+<td align="center" nowrap>
+<img src="{{ url_for('static', filename='images/PBM.png') }}"
+width="77" height="97">
+</td>
+</tr>
+</table>
+
+<table width="88%" border="0" align="center" class="JUST">
+<tr>
+<td align="center">
+<strong>
+AUTODECLARAÇÃO DE BAIXA RENDA<br>
+ANEXO I<br>
+Boletim Geral 121, de 29 de junho de 2021
+</strong>
+</td>
+</tr>
+
+<tr>
+<td>
+
+<p>&nbsp;</p>
+
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Eu, <strong>{{ ficha.pessoaresp }}</strong>, portador (a) da Carteira de Identidade nº _________________,
+emitida pela (o) _______________, e CPF nº __________________,
+Residente à <strong>{{ ficha.endereco }}</strong>,
+responsável pelo menor <strong>{{ ficha.nome }}</strong>, declaro, para os devidos fins, que:
+</p>
+
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(&nbsp;&nbsp;&nbsp;&nbsp;) A renda total mensal familiar (formal e informal)
+não ultrapassa meio salário mínimo por pessoa.
+</p>
+
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(&nbsp;&nbsp;&nbsp;&nbsp;) A renda total mensal familiar (formal e informal)
+não ultrapassa o valor de 03 (três) salários-mínimos.
+</p>
+
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Atendendo assim a condição de baixa renda que o Decreto nº 21.104,
+de 31 de março de 2000 estabelece como requisito para ingresso e permanência
+no Programa Bombeiro Mirim do Corpo de Bombeiros Militar do Distrito Federal.
+</p>
+
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Declaro que as informações acima representam expressão da verdade,
+e que estou ciente que qualquer alteração na condição de baixa renda
+deve ser informada para a Coordenação do Programa Bombeiro Mirim.
+</p>
+
+<p align="right">
+Brasília, {{ data_extenso }}.
+</p>
+
+<p align="center">
+<br><br>
+_____________________________________________<br>
+Responsável legal / RG (nº de identidade)
+<br><br>
+</p>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

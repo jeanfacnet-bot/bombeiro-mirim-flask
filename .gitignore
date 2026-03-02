@@ -1,0 +1,15 @@
+venv/
+env/
+.venv/
+
+__pycache__/
+*.pyc
+
+instance/
+*.db
+
+app/static/images/
+
+*.cdr
+*.mno
+photothumb.db

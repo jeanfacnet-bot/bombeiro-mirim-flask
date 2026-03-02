@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Declaração de Comparecimento</title>
+
+<style>
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 20px;
+}
+.container {
+    width: 600px;
+    margin: auto;
+}
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+button {
+    padding: 10px 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>Declaração de Comparecimento</h2>
+
+<form method="POST">
+
+Nome:
+<input type="text" name="nome" value="{{ ficha.pessoaresp }}" required>
+
+CPF:
+<input type="text" name="cpf" required>
+
+Período:
+<input type="text" name="periodo" required>
+
+Hora início:
+<input type="time" name="hora_inicio" required>
+
+Hora fim:
+<input type="time" name="hora_fim" required>
+
+Informações adicionais:
+<textarea name="texto" rows="4" required></textarea>
+
+<button type="submit">Gerar Documento</button>
+
+</form>
+</div>
+
+</body>
+</html>

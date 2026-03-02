@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Termo de IMAGEM, VOZ E SOM</title>
+
+<style>
+body {
+    margin: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.JUST {
+    text-align: justify;
+}
+</style>
+</head>
+
+<body onload="window.print()">
+
+<table width="100%" border="0">
+<tr>
+<td align="center" nowrap>
+<img src="{{ url_for('static', filename='images/cbmdf.jpg') }}"
+width="104" height="107">
+</td>
+
+<td align="center" nowrap>
+<strong>
+CORPO DE BOMBEIROS MILITAR DO DISTRITO FEDERAL<br>
+ASSESSORIA DE PROGRAMAS SOCIAIS<br>
+PROGRAMA BOMBEIRO MIRIM
+</strong>
+</td>
+
+<td align="center" nowrap>
+<img src="{{ url_for('static', filename='images/PBM.png') }}"
+width="77" height="97">
+</td>
+</tr>
+</table>
+
+<table width="88%" border="0" align="center" class="JUST">
+
+<tr>
+<td align="center">
+<strong>
+TERMO DE AUTORIZAÇÃO DE USO DE IMAGEM, VOZ E SOM<br>
+ANEXO III<br>
+Boletim Geral 121, de 29 de junho de 2021
+</strong>
+</td>
+</tr>
+
+<tr>
+<td>
+<p>&nbsp;</p>
+
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Eu <strong>{{ ficha.pessoaresp }}</strong>, AUTORIZO ao Corpo de Bombeiros Militar do Distrito Federal,
+a utilizar a imagem do meu filho, <strong>{{ ficha.nome }}</strong>,
+em todo e qualquer material entre imagens de vídeo, fotos e voz,
+capturados nas atividades e eventos referentes ao Programa Bombeiro Mirim.
+</p>
+
+<p>
+A presente autorização é concedida a título gratuito,
+abrangendo o uso da imagem acima mencionada em todo território nacional e no exterior,
+das seguintes formas:
+(I) out-door;
+(II) busdoor;
+(III) folhetos em geral (encartes, mala direta, catálogo, etc.);
+(IV) folder de apresentação;
+(V) anúncios em revistas e jornais em geral;
+(VI) homepage;
+(VII) cartazes;
+(VIII) back-light;
+(VIV) mídia eletrônica (painéis, vídeo-tapes, televisão, cinema, programa para rádio, entre outros).
+</p>
+
+<p>
+Por meio desta autorização ora concedida, autorizo ao Corpo de Bombeiros Militar do Distrito Federal,
+ainda a realizar nas imagens e sons captados,
+cortes, reduções e edições.
+</p>
+
+<p>
+Esta autorização não gera e não gerará no futuro e também não ensejará interpretação de existir quaisquer vínculos ou obrigações indenizatórias entre o(a) cedente e o Corpo de Bombeiros Militar do Distrito Federal.
+</p>
+
+</td>
+</tr>
+
+<tr>
+<td align="right">
+Brasília-DF, {{ data_extenso }}
+</td>
+</tr>
+
+<tr>
+<td align="center">
+
+<br><br>
+<strong>
+____________________________________________<br>
+{{ ficha.pessoaresp }}
+</strong>
+
+</td>
+</tr>
+
+</table>
+
+</body>
+</html>

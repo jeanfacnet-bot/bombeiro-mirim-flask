@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login SIPROS</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: url('{{ url_for("static", filename="images/fundo_cbm.jpg") }}') 
+                        no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .logo {
+            width: 350px;
+            height: 250px;
+            object-fit: contain;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+
+            <div class="card">
+                <div class="card-body p-5 text-center">
+
+                    <img src="{{ url_for('static', filename='images/APROS.png') }}" 
+                         alt="Logo SIPROS" class="logo">
+
+                    <h2 class="fw-bold mb-4">SIPROS</h2>
+
+                    {% if error %}
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            {{ error }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
+
+                    <form method="POST">
+
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" 
+                                   name="usuario" required 
+                                   pattern="[0-9]+" 
+                                   title="Digite apenas números">
+                            <label>Matrícula/CPF</label>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <input type="password" class="form-control" 
+                                   name="senha" required minlength="4">
+                            <label>Senha</label>
+                        </div>
+
+                        <button class="btn btn-primary btn-lg w-100" type="submit">
+                            Entrar
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

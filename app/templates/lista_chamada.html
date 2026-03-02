@@ -1,0 +1,27 @@
+<table class="table table-hover">
+    <thead class="table-primary">
+        <tr>
+            <th>Nome</th>
+            <th style="text-align:center;">Presença</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    {% for aluno in alunos %}
+        <tr>
+            <td>{{ aluno.nome }}</td>
+            <td style="text-align:center;">
+                <input type="hidden" name="presenca" value="{{ aluno.id }}">
+                <input type="hidden" name="status_{{ aluno.id }}" value="1">
+
+                <button type="button"
+                        class="btn btn-success"
+                        onclick="togglePresenca(this)">
+                    Presente
+                </button>
+            </td>
+        </tr>
+    {% endfor %}
+
+    </tbody>
+</table>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Declaração de Comparecimento</title>
+
+<style>
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 20px;
+}
+
+table {
+    width: 80%;
+    margin: auto;
+}
+
+.center {
+    text-align: center;
+}
+
+.justify {
+    text-align: justify;
+    line-height: 1.5;
+}
+
+.signature {
+    margin-top: 50px;
+    text-align: center;
+}
+</style>
+</head>
+
+<body onload="window.print()">
+
+<table>
+<tr>
+<td class="center">
+<img src="{{ url_for('static', filename='images/cbmdf.jpg') }}"
+width="104" height="107">
+</td>
+
+<td class="center">
+<strong>
+CORPO DE BOMBEIROS MILITAR DO DISTRITO FEDERAL<br>
+ASSESSORIA DE PROGRAMAS SOCIAIS<br>
+PROGRAMA BOMBEIRO MIRIM
+</strong>
+</td>
+
+<td class="center">
+<img src="{{ url_for('static', filename='images/PBM.png') }}"
+width="77" height="97">
+</td>
+</tr>
+</table>
+
+<br><br>
+
+<table>
+<tr>
+<td class="center">
+<h2>DECLARAÇÃO DE COMPARECIMENTO</h2>
+</td>
+</tr>
+
+<tr>
+<td class="justify">
+
+Declaro para os devidos fins que o(a) Sr(a)
+<strong>{{ nome }}</strong>,
+CPF <strong>{{ cpf }}</strong>,
+compareceu à Unidade do Bombeiro Mirim de {{ current_user.obm }}
+no período <strong>{{ periodo }}</strong>,
+das <strong>{{ hora_inicio }}</strong> às
+<strong>{{ hora_fim }}</strong>.
+
+<br><br>
+
+{{ texto }}
+
+</td>
+</tr>
+</table>
+
+<p class="center">
+Brasília, {{ data_extenso }}.
+</p>
+
+<div class="signature">
+_________________________________<br>
+Assinatura Militar
+</div>
+
+</body>
+</html>

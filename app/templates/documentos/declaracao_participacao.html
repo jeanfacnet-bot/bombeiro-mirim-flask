@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Declaração de Participação</title>
+
+<style>
+body {
+    margin: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.justify {
+    text-align: justify;
+    line-height: 1.5;
+}
+</style>
+</head>
+
+<body onload="window.print()">
+
+<br>
+
+<table width="80%" border="0" align="center">
+<tr>
+<td align="center">
+<img src="{{ url_for('static', filename='images/cbmdf.jpg') }}"
+width="104" height="107">
+</td>
+
+<td align="center">
+<strong>
+CORPO DE BOMBEIROS MILITAR DO DISTRITO FEDERAL<br>
+ASSESSORIA DE PROGRAMAS SOCIAIS<br>
+PROGRAMA BOMBEIRO MIRIM
+</strong>
+</td>
+
+<td align="center">
+<img src="{{ url_for('static', filename='images/PBM.png') }}"
+width="77" height="97">
+</td>
+</tr>
+</table>
+
+<table width="80%" border="0" align="center">
+<tr>
+<td align="center">
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<p><strong>DECLARAÇÃO DE PARTICIPAÇÃO</strong></p>
+
+<p>&nbsp;</p>
+
+<p class="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+Declaramos para os devidos fins que o(a) aluno(a)
+<strong>{{ ficha.nome }}</strong>
+nascido(a) em
+<strong>
+{% if ficha.datanascimento %}
+{{ ficha.datanascimento.strftime('%d/%m/%Y') }}
+{% endif %}
+</strong>,
+portador(a) do CPF nº
+<strong>{{ ficha.cpf }}</strong>,
+está matriculado neste Programa Bombeiro Mirim sob matrícula nº
+<strong>{{ ficha.id }}</strong>,
+no período
+<strong>{{ ficha.turnopbm }}</strong>,
+nos dias de <strong>Segundas, Quartas e Quintas</strong>.
+
+O Programa Bombeiro Mirim do DF foi criado pela Lei nº 2.449, de 24 de setembro de 1999 e regulamentado pelo Decreto nº 21.104 de 31 de março de 2000.
+</p>
+
+<p class="justify">
+Obs.:<br>
+MATUTINO = 8h às 11h<br>
+VESPERTINO = 14h às 17h
+</p>
+
+<p align="right">
+Brasília, {{ data_extenso }}.
+</p>
+
+<br><br><br><br>
+
+<p align="center">
+___________________________________<br>
+Assinatura do Coordenador
+</p>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

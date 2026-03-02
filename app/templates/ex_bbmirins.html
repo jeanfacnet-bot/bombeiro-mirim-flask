@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ex-Bombeiros Mirins</title>
+
+<style>
+.containerimg {
+    max-width: 250px;
+    max-height: 250px;
+    width: 250px;
+    height: 250px;
+    font-family: Verdana, Geneva, sans-serif;
+    color: #000;
+    background-color: #CFF;
+    text-transform: uppercase;
+    font-size: 18px;
+}
+
+p {
+    background: #CCC;
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 18px;
+}
+
+body {
+    margin: 10px;
+    font-size: 10px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<br>
+
+<form method="get">
+    <label for="filtronome">Filtrar por nome:</label>
+    <input type="text" id="filtronome" name="filtronome" value="{{ filtronome }}">
+    <button type="submit">Filtrar</button>
+</form>
+
+<p align="center" style="font-size:24px">
+    <strong>Total de Ex-Bombeiros Mirins: {{ total }}</strong>
+</p>
+
+{% for aluno in ex_alunos %}
+    <strong>
+        <a href="{{ url_for('main.editar', id=aluno.id) }}" 
+           title="{{ aluno.nome }}" 
+           target="_blank">
+           
+           {% if aluno.foto %}
+           <img src="{{ url_for('static', filename='images/' ~ aluno.foto) }}" 
+                alt="{{ aluno.nome }}" 
+                class="containerimg" 
+                title="{{ aluno.nome }}">
+           {% else %}
+           <div class="containerimg">
+               SEM FOTO<br>
+               {{ aluno.nome }}
+           </div>
+           {% endif %}
+        </a>
+    </strong>
+{% endfor %}
+
+<br><br>
+
+</body>
+</html>
