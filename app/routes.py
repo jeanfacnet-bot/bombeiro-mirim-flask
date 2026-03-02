@@ -438,17 +438,25 @@ def editar(id):
     )
 
 @main.route("/buscar_alunos")
+@login_required
 def buscar_alunos():
-    alunos = Ficha.query.order_by(Ficha.nome).all()
 
-    lista = []
-    for aluno in alunos:
-        lista.append({
-            "id": aluno.id,
-            "nome": aluno.nome
-        })
+    termo = request.args.get("q", "").strip()
 
-    return {"alunos": lista}    
+    if len(termo) < 2:
+        return jsonify([])
+
+    alunos = Ficha.query.filter(
+        Ficha.nome.ilike(f"%{termo}%"),
+        func.upper(Ficha.localpbm) == current_user.obm.upper()
+    ).order_by(Ficha.nome).limit(10).all()
+
+    resultado = [
+        {"id": aluno.id, "nome": aluno.nome}
+        for aluno in alunos
+    ]
+
+    return jsonify(resultado)   
     
 @main.route("/reserva")
 def reserva():

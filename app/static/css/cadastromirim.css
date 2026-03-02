@@ -147,3 +147,40 @@ body {
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
+
+/* ========================= */
+/* AJUSTES SOMENTE MOBILE    */
+/* ========================= */
+
+@media (max-width: 768px) {
+
+    /* Remove excesso de padding lateral */
+    .container-fluid {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    /* Header do card empilha corretamente */
+    .card-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px;
+    }
+
+    /* Botão ocupar largura total */
+    .btn-lg {
+        width: 100%;
+    }
+
+    /* Autocomplete não estourar */
+    #resultadoBusca {
+        max-height: 250px;
+        overflow-y: auto;
+    }
+
+    /* Evita quebra horizontal */
+    body {
+        overflow-x: hidden;
+    }
+
+}
