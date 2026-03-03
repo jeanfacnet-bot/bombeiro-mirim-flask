@@ -21,7 +21,7 @@
 <!-- =================== PAINEL LATERAL =================== -->
 {% if not externo %}
 
-<div class="col-md-3">
+<div class="{% if usuario and usuario.nivel == 2 %}col-md-3{% else %}col-md-6{% endif %}">
 
 <div class="card mb-4">
 <div class="card-header bg-primary text-white text-center">
@@ -124,6 +124,9 @@ Total por Localidade
 </div>
 </div>
 {% endif %}
+
+{% if usuario and usuario.nivel == 2 %}
+
 <!-- =================== FORMULÁRIO CENTRAL =================== -->
 <div class="{% if externo %}col-md-8 offset-md-2{% else %}col-md-6{% endif %}">
 
@@ -492,10 +495,12 @@ Total por Localidade
 
 </div>
 
+{% endif %}
+
 <!-- ================= LINKS RÁPIDOS ================= -->
 
 {% if not externo %}
-<div class="col-md-3">
+<div class="{% if usuario and usuario.nivel == 2 %}col-md-3{% else %}col-md-6{% endif %}">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
             <h5 class="card-title mb-0 text-center">Links Rápidos</h5>
