@@ -69,6 +69,18 @@ def dashboard():
 
     usuario = current_user
     
+    from datetime import date
+
+    hoje = date.today()
+
+    # faixa etária 7–14 anos
+    data_min_7_14 = date(hoje.year - 14, hoje.month, hoje.day)
+    data_max_7_14 = date(hoje.year - 7, hoje.month, hoje.day)
+
+    # exatamente 15 anos
+    data_min_15 = date(hoje.year - 15, hoje.month, hoje.day)
+    data_max_15 = date(hoje.year - 15, hoje.month, hoje.day)
+    
     from sqlalchemy import text
 
     # Total ativos 7 a 14 anos
@@ -80,7 +92,7 @@ def dashboard():
             WHERE situacao = '1'
             AND turnopbm <> 'RESERVA'
             AND UPPER(localpbm) = UPPER(:obm)
-            AND date_part('year', age(current_date, datanascimento)) BETWEEN 7 AND 14
+            AND datanascimento BETWEEN :data_min AND :data_max
         """), {"obm": usuario.obm}).scalar()
 
     else:
@@ -90,7 +102,7 @@ def dashboard():
             FROM bdpbm.ficha
             WHERE situacao = '1'
             AND turnopbm <> 'RESERVA'
-            AND date_part('year', age(current_date, datanascimento)) BETWEEN 7 AND 14
+            AND datanascimento BETWEEN :data_min AND :data_max
         """)).scalar()
     
     # Total em RESERVA (7-14 anos da OBM do usuário)
@@ -102,7 +114,7 @@ def dashboard():
             WHERE situacao = '1'
             AND turnopbm = 'RESERVA'
             AND UPPER(localpbm) = UPPER(:obm)
-            AND date_part('year', age(current_date, datanascimento)) BETWEEN 7 AND 14
+            AND datanascimento BETWEEN :data_min AND :data_max
         """), {"obm": usuario.obm}).scalar()
 
     else:
@@ -112,7 +124,7 @@ def dashboard():
             FROM bdpbm.ficha
             WHERE situacao = '1'
             AND turnopbm = 'RESERVA'
-            AND date_part('year', age(current_date, datanascimento)) BETWEEN 7 AND 14
+            AND datanascimento BETWEEN :data_min AND :data_max
         """)).scalar()
 
 
@@ -151,7 +163,7 @@ def dashboard():
         WHERE situacao = '1'
         AND turnopbm = 'MATUTINO'
         AND UPPER(localpbm) = UPPER(:obm)
-        AND date_part('year', age(current_date, datanascimento)) BETWEEN 7 AND 14
+        AND datanascimento BETWEEN :data_min AND :data_max
     """), {"obm": usuario.obm}).scalar()
 
 
@@ -162,7 +174,7 @@ def dashboard():
         WHERE situacao = '1'
         AND turnopbm = 'VESPERTINO'
         AND UPPER(localpbm) = UPPER(:obm)
-        AND date_part('year', age(current_date, datanascimento)) BETWEEN 7 AND 14
+        AND datanascimento BETWEEN :data_min AND :data_max
     """), {"obm": usuario.obm}).scalar()
 
 
@@ -191,7 +203,7 @@ def dashboard():
         SELECT 
             localpbm,
             COUNT(*) FILTER (
-                WHERE date_part('year', age(current_date, datanascimento)) BETWEEN 7 AND 14
+                WHERE datanascimento BETWEEN :data_min AND :data_max
             ) as total_7_14,
             COUNT(*) FILTER (
                 WHERE date_part('year', age(current_date, datanascimento)) = 15
