@@ -93,7 +93,11 @@ def dashboard():
             AND turnopbm <> 'RESERVA'
             AND UPPER(localpbm) = UPPER(:obm)
             AND datanascimento BETWEEN :data_min AND :data_max
-        """), {"obm": usuario.obm}).scalar()
+        """), {
+            "obm": usuario.obm,
+            "data_min": data_min_7_14,
+            "data_max": data_max_7_14
+        }).scalar()
 
     else:
 
@@ -115,7 +119,11 @@ def dashboard():
             AND turnopbm = 'RESERVA'
             AND UPPER(localpbm) = UPPER(:obm)
             AND datanascimento BETWEEN :data_min AND :data_max
-        """), {"obm": usuario.obm}).scalar()
+        """), {
+            "obm": usuario.obm,
+            "data_min": data_min_7_14,
+            "data_max": data_max_7_14
+        }).scalar()
 
     else:
 
@@ -146,7 +154,11 @@ def dashboard():
             FROM bdpbm.ficha
             WHERE situacao = '1'
             AND UPPER(localpbm) = UPPER(:obm)
-        """), {"obm": usuario.obm}).scalar()
+        """), {
+            "obm": usuario.obm,
+            "data_min": data_min_7_14,
+            "data_max": data_max_7_14
+        }).scalar()
 
     else:
 
@@ -164,7 +176,11 @@ def dashboard():
         AND turnopbm = 'MATUTINO'
         AND UPPER(localpbm) = UPPER(:obm)
         AND datanascimento BETWEEN :data_min AND :data_max
-    """), {"obm": usuario.obm}).scalar()
+    """), {
+            "obm": usuario.obm,
+            "data_min": data_min_7_14,
+            "data_max": data_max_7_14
+        }).scalar()
 
 
     # Total VESPERTINO (7-14 anos da OBM do usuário)
@@ -175,7 +191,11 @@ def dashboard():
         AND turnopbm = 'VESPERTINO'
         AND UPPER(localpbm) = UPPER(:obm)
         AND datanascimento BETWEEN :data_min AND :data_max
-    """), {"obm": usuario.obm}).scalar()
+    """), {
+            "obm": usuario.obm,
+            "data_min": data_min_7_14,
+            "data_max": data_max_7_14
+        }).scalar()
 
 
     # Total Neurodivergentes
@@ -187,7 +207,11 @@ def dashboard():
             WHERE situacao = '1'
             AND possui_neurodivergencia = 'sim'
             AND UPPER(localpbm) = UPPER(:obm)
-        """), {"obm": usuario.obm}).scalar()
+        """), {
+            "obm": usuario.obm,
+            "data_min": data_min_7_14,
+            "data_max": data_max_7_14
+        }).scalar()
 
     else:
 
