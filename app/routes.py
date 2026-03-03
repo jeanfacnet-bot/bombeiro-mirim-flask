@@ -107,7 +107,10 @@ def dashboard():
             WHERE situacao = '1'
             AND turnopbm <> 'RESERVA'
             AND datanascimento BETWEEN :data_min AND :data_max
-        """)).scalar()
+        """), {
+            "data_min": data_min_7_14,
+            "data_max": data_max_7_14
+        }).scalar()
     
     # Total em RESERVA (7-14 anos da OBM do usuário)
     if current_user.nivel == 2:
@@ -133,7 +136,10 @@ def dashboard():
             WHERE situacao = '1'
             AND turnopbm = 'RESERVA'
             AND datanascimento BETWEEN :data_min AND :data_max
-        """)).scalar()
+        """), {
+            "data_min": data_min_7_14,
+            "data_max": data_max_7_14
+        }).scalar()
 
 
     # Jovem Candango (14-15 anos ativos)
