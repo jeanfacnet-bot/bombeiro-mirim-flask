@@ -237,7 +237,10 @@ def dashboard():
         AND turnopbm <> 'RESERVA'
         GROUP BY localpbm
         ORDER BY localpbm ASC
-    """)).fetchall()
+    """), {
+        "data_min": data_min_7_14,
+        "data_max": data_max_7_14
+    }).fetchall()
     
     # -------- ROTAS (apenas se OBM for Ceilândia) --------
     rotas = []
