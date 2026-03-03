@@ -72,13 +72,26 @@ def dashboard():
     from sqlalchemy import text
 
     # Total ativos 7 a 14 anos
-    total_ativos = db.session.execute(text("""
-        SELECT COUNT(*) 
-        FROM bdpbm.ficha
-        WHERE situacao = '1'
-        AND turnopbm <> 'RESERVA'
-        AND date_part('year', age(current_date, datanascimento)) BETWEEN 7 AND 14
-    """)).scalar()
+    if current_user.nivel in [2, 3]:
+
+        total_ativos = db.session.execute(text("""
+            SELECT COUNT(*) 
+            FROM bdpbm.ficha
+            WHERE situacao = '1'
+            AND turnopbm <> 'RESERVA'
+            AND UPPER(localpbm) = UPPER(:obm)
+            AND date_part('year', age(current_date, datanascimento)) BETWEEN 7 AND 14
+        """), {"obm": usuario.obm}).scalar()
+
+    else:
+
+        total_ativos = db.session.execute(text("""
+            SELECT COUNT(*) 
+            FROM bdpbm.ficha
+            WHERE situacao = '1'
+            AND turnopbm <> 'RESERVA'
+            AND date_part('year', age(current_date, datanascimento)) BETWEEN 7 AND 14
+        """)).scalar()
     
     # Total em RESERVA (7-14 anos da OBM do usuário)
     total_reserva = db.session.execute(text("""
@@ -1678,17 +1691,18 @@ def gerenciar_usuarios():
 
             db.session.execute(text("""
                 INSERT INTO bdpbm.senha
-                (nome, usuario, obm, nivel, funcao, status, senha, data)
+                (nome, usuario, obm, nivel, funcao, status, senha, data, respalteracao)
                 VALUES
-                (:nome, :usuario, :obm, :nivel, :funcao, :status, :senha, NOW())
+                (:nome, :usuario, :obm, :nivel, :funcao, :status, :senha, NOW(), :resp)
             """), {
                 "nome": nome,
                 "usuario": usuario,
                 "obm": obm,
                 "nivel": nivel,
                 "funcao": funcao,
-                "status": status,
-                "senha": senha_md5
+                "status": True if status == "true" else False,
+                "senha": senha_md5,
+                "resp": current_user.idsenha
             })
 
         db.session.commit()
@@ -1761,11 +1775,13 @@ def gerenciar_usuarios():
         ORDER BY nome
     """)).fetchall()
 
-    unidades = db.session.execute(text("""
-        SELECT *
+    unidades_raw = db.session.execute(text("""
+        SELECT nome_unidade
         FROM bdpbm.tb_unidades
-        ORDER BY id_unidade
+        ORDER BY nome_unidade
     """)).fetchall()
+
+    unidades = [u[0] for u in unidades_raw]
 
     # ==========================================
     # ESTATÍSTICAS
@@ -1788,8 +1804,11 @@ def gerenciar_usuarios():
         SELECT funcao, COUNT(*) as total
         FROM bdpbm.senha
         WHERE status = true
+        AND funcao IS NOT NULL
+        AND funcao <> ''
         GROUP BY funcao
-    """)).fetchall()
+        ORDER BY funcao
+    """)).mappings().all()
 
     return render_template(
         "gerenciar_usuarios.html",

@@ -120,3 +120,6 @@ class Passeio(db.Model):
     local_passeio = db.Column(db.String(200))
     obm = db.Column(db.String(100))
     data_criacao = db.Column(db.DateTime, default=datetime.utcnow)    
+    
+    
+ 

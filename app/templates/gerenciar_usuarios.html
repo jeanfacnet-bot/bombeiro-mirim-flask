@@ -180,14 +180,13 @@ value="{{ editUser.usuario if editUser else '' }}" required>
 <div class="col-md-4">
 <label class="form-label">OBM</label>
 <select name="obm" class="form-select" required>
-<option value="">Selecione a OBM</option>
-{% for u in unidades %}
-<option value="{{ u.unidade }}"
-{% if editUser and editUser.obm == u.unidade %}selected{% endif %}>
-{{ u.unidade }}
-</option>
-{% endfor %}
-<option value="outros">Outros</option>
+    <option value="">Selecione a OBM</option>
+
+    {% for u in unidades %}
+        <option value="{{ u }}">{{ u }}</option>
+    {% endfor %}
+
+    <option value="outros">Outros</option>
 </select>
 </div>
 </div>
@@ -213,14 +212,13 @@ value="{{ editUser.usuario if editUser else '' }}" required>
 <div class="col-md-6">
 <label class="form-label">Função</label>
 <select name="funcao" class="form-select">
-<option value="">Selecione a Função</option>
-{% for f in funcoes %}
-<option value="{{ f.funcao }}"
-{% if editUser and editUser.funcao == f.funcao %}selected{% endif %}>
-{{ f.funcao }}
-</option>
-{% endfor %}
-<option value="outros">Outros</option>
+    <option value="">Selecione a Função</option>
+
+    {% for f in stats_funcao %}
+        <option value="{{ f.funcao }}">{{ f.funcao }}</option>
+    {% endfor %}
+
+    <option value="outros">Outros</option>
 </select>
 </div>
 
