@@ -94,14 +94,26 @@ def dashboard():
         """)).scalar()
     
     # Total em RESERVA (7-14 anos da OBM do usuário)
-    total_reserva = db.session.execute(text("""
-        SELECT COUNT(*) 
-        FROM bdpbm.ficha
-        WHERE situacao = '1'
-        AND turnopbm = 'RESERVA'
-        AND UPPER(localpbm) = UPPER(:obm)
-        AND date_part('year', age(current_date, datanascimento)) BETWEEN 7 AND 14
-    """), {"obm": usuario.obm}).scalar()
+    if current_user.nivel == 2:
+
+        total_reserva = db.session.execute(text("""
+            SELECT COUNT(*) 
+            FROM bdpbm.ficha
+            WHERE situacao = '1'
+            AND turnopbm = 'RESERVA'
+            AND UPPER(localpbm) = UPPER(:obm)
+            AND date_part('year', age(current_date, datanascimento)) BETWEEN 7 AND 14
+        """), {"obm": usuario.obm}).scalar()
+
+    else:
+
+        total_reserva = db.session.execute(text("""
+            SELECT COUNT(*) 
+            FROM bdpbm.ficha
+            WHERE situacao = '1'
+            AND turnopbm = 'RESERVA'
+            AND date_part('year', age(current_date, datanascimento)) BETWEEN 7 AND 14
+        """)).scalar()
 
 
     # Jovem Candango (14-15 anos ativos)
@@ -114,12 +126,23 @@ def dashboard():
     """)).scalar()
 
 
-    # Total de registros da OBM
-    total_registros = db.session.execute(text("""
-        SELECT COUNT(*)
-        FROM bdpbm.ficha
-        WHERE UPPER(localpbm) = UPPER(:obm)
-    """), {"obm": usuario.obm}).scalar()
+    # Total de registros
+    if current_user.nivel == 2:
+
+        total_registros = db.session.execute(text("""
+            SELECT COUNT(*)
+            FROM bdpbm.ficha
+            WHERE situacao = '1'
+            AND UPPER(localpbm) = UPPER(:obm)
+        """), {"obm": usuario.obm}).scalar()
+
+    else:
+
+        total_registros = db.session.execute(text("""
+            SELECT COUNT(*)
+            FROM bdpbm.ficha
+            WHERE situacao = '1'
+        """)).scalar()
     
     # Total MATUTINO (7-14 anos da OBM do usuário)
     total_matutino = db.session.execute(text("""
@@ -144,12 +167,24 @@ def dashboard():
 
 
     # Total Neurodivergentes
-    total_neuro = db.session.execute(text("""
-        SELECT COUNT(*) 
-        FROM bdpbm.ficha
-        WHERE situacao = '1'
-        AND possui_neurodivergencia = 'sim'
-    """)).scalar()
+    if current_user.nivel == 2:
+
+        total_neuro = db.session.execute(text("""
+            SELECT COUNT(*) 
+            FROM bdpbm.ficha
+            WHERE situacao = '1'
+            AND possui_neurodivergencia = 'sim'
+            AND UPPER(localpbm) = UPPER(:obm)
+        """), {"obm": usuario.obm}).scalar()
+
+    else:
+
+        total_neuro = db.session.execute(text("""
+            SELECT COUNT(*) 
+            FROM bdpbm.ficha
+            WHERE situacao = '1'
+            AND possui_neurodivergencia = 'sim'
+        """)).scalar()
     
     # Totais por Localidade (7-14 e 15 anos)
     totais_localidade = db.session.execute(text("""
