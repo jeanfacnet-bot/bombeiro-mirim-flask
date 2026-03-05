@@ -1626,6 +1626,7 @@ def autorizacao_passeio(idpasseio):
 @main.route("/inscricao", methods=["GET"])
 def inscricao():
 
+    # buscar OBMs existentes no banco
     obms = db.session.execute(text("""
         SELECT DISTINCT localpbm
         FROM bdpbm.ficha
@@ -1636,9 +1637,11 @@ def inscricao():
     lista_obms = [o.localpbm for o in obms]
 
     return render_template(
-        "inscricao_publica.html",
+        "index.html",
+        usuario=None,
+        externo=True,
         obms=lista_obms
-    ) 
+    )    
     
 @main.route("/estatisticas-sipros")
 def estatisticas_sipros():
