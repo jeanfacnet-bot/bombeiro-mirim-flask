@@ -1,5 +1,5 @@
 git add .
-git commit -m "correcao painel lateral"
+git commit -m "correcao"
 git push
 
 
