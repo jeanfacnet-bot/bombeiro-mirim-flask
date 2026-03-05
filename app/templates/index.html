@@ -125,7 +125,7 @@ Total por Localidade
 </div>
 {% endif %}
 
-{% if usuario and usuario.nivel == 2 %}
+{% if externo or (usuario and usuario.nivel == 2) %}
 
 <!-- =================== FORMULÁRIO CENTRAL =================== -->
 <div class="{% if externo %}col-md-8 offset-md-2{% else %}col-md-6{% endif %}">
